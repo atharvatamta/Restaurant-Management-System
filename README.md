@@ -166,6 +166,138 @@ ord_no integer references ord(ord_no)
 
 
 ### 4.1 PL/SQL function
+
+
+###1. show_menu procedure
+Displays the items and their prices using a cursor.
+```sql
+
+declare
+cursor c1 is select item_name,item_price from food;
+rec1 c1%rowtype;
+procedure show_menu is
+begin
+open c1;
+loop
+fetch c1 into rec1;
+exit when c1% not found;
+dbms_output.put_line('Item :'||rec1.item_name||' Price : '||rec1.item_price);
+end loop;
+close c1;
+end;
+begin
+show_menu;
+end;
+
+```
+### 2. get_cust_id Function
+If a customer already exists then returns the existing ID else creates a new customer and returns the new ID.
+
+```sql
+declare
+id integer;
+if exists integer:=0;
+function get_cust_id(fname in varchar, Iname in varchar, contact in integer) return number is
+begin
+select count(*) into if_exists from customer where cust_fname=fname and cust_Iname=Iname and contact_no=contact; 
+if_exists>0 then
+select cust_id into id from customer where cust_fname=fname and cust_lname=lname and contact_no=contact;
+return(id);
+else
+select count(*)+1 into id from customer;
+insert into customer values (id, fname, lname, contact); 
+return(id);
+end if;
+end;
+begin
+id:=get_cust_id('Blake', 'Ryan', 900000004); 
+dbms_output.put_line('Customer Id is' || id);
+end;
+
+```
+3. Placing Order
+a. in_stock trigger:
+Before Inserting the food items in the order it checks if the items are in stock if they are not in stock it will raise an error.
+
+This function inserts the items in the form of an array of item_no in the order and returns the order_no to the customer.
+d. add_order procedure:
+This function adds the items in the form of an array of item_no in the order of the given order_no.
+
+```sql
+create or replace trigger in_stock
+before insert on contains for each row
+declare
+stock integer;
+begin
+select item_stock into stock from food where food.item_no=:new.item_no;
+if stock=0 then raise_application_error(-20000, 'Out of Stock'); 
+end if;
+end;
+
+```
+b. after_order trigger:
+After Inserting the food items in the order it updates the stock of the items and decreases them accordingly.
+
+
+```sql
+create or replace trigger after_order
+after insert on contains for each row
+begin
+update food set item_stock=item_stock-1 where item_no=:new.item_no;
+end;
+
+```
+c. place_order function:
+This function inserts the items in the form of an array of item_no in the order and returns the order_no to the customer..
+
+
+```sql
+
+declare
+type num_array is varray(50) of integer;
+items num_array;
+order_no integer;
+function place_order (id in integer, items in num_array,wait_id in number) return integer is 
+begin
+select count(*)+1 into order_no from ord;
+insert into ord values (order_no, sysdate, id,wait_id);
+for i in 1..items.count loop
+insert into contains values (order_no,items(i));
+end loop;
+return (order_no);
+end;
+begin
+items:=num_array(1,2);
+order_no:=place_order (4, items,3);
+dbms_output.put_line ('Your Order No is '||order_no);
+end;
+
+
+```
+d. add_order procedure:
+This function adds the items in the form of an array of item_no in the order of the given order_no.
+
+```sql
+declare
+type num_array is varray(50) of integer;
+items num_array;
+order_no integer;
+procedure add_order(order_no in integer, items in num_array) is 
+begin
+for i in 1..items.count loop
+insert into contains values (order_no, items (i));
+end loop;
+end;
+```
+After processing all the statements we can see in the contains table the order_no 4 has three items and stock has decreased by 1.
+```sql
+begin
+items:=num_array(3);
+add_order(4,items);
+end;
+```
+
+(![ER diagram](https://private-user-images.githubusercontent.com/110754495/329263858-9421d61c-e965-4c77-aaaf-b766c73efe90.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNjIyMjUsIm5iZiI6MTcxNTI2MTkyNSwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjYzODU4LTk0MjFkNjFjLWU5NjUtNGM3Ny1hYWFmLWI3NjZjNzNlZmU5MC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMzM4NDVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0yYjdjMGMwZjcwODU2YTVkYWJlOTFiNjlhOGQ1ZWRiZjI3NWI1OTIyMWExZTA0NTdmY2U2MWU3MzdhNDZhNjkzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.eM7vuqlcNwsdQVli293idCBa3uKrwuUd5Kz-yO0YCHM)
 #### Generating Bill
 a. display_bill trigger:
 It displays the bill along with the bill_no,ord_no,items, price, total price, discount, tax and the net_payable amount to the customer.
