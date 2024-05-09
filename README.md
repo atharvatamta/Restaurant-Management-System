@@ -1,9 +1,7 @@
 # Restaurant-Management-System
-# Ecommerce Management DBMS Project
 
 As a part of our University Curriculum, we made this project for Database Management Systems (DBMS) - ITE1003.<br>
 This project contains theoretical as well as implementation in SQL.<br>
-If you liked the repo do :star: it. 
 
 ## Pre-requisite
 
@@ -82,106 +80,80 @@ You can directly copy and paste all the commands from the text given here into t
 ### 3.1 Creating Tables
 
 ```sql
-    CREATE TABLE Cart
-    (
-        Cart_id VARCHAR(7) NOT NULL,
-        PRIMARY KEY(Cart_id)
-    );
-
-    CREATE TABLE Customer
-    (
-        Customer_id VARCHAR(6) NOT NULL,
-        c_pass VARCHAR(10) NOT NULL,
-        Name VARCHAR(20) NOT NULL,
-        Address VARCHAR(20) NOT NULL,
-        Pincode NUMBER(6) NOT NULL,
-        Phone_number_s number(10) NOT NULL,
-        PRIMARY KEY (Customer_id),
-        Cart_id VARCHAR(7) NOT NULL,
-        FOREIGN KEY(Cart_id) REFERENCES cart(Cart_id)
-    );
-
-    CREATE TABLE Seller
-    (
-        Seller_id VARCHAR(6) NOT NULL,
-        s_pass VARCHAR(10) NOT NULL,
-        Name VARCHAR(20) NOT NULL,
-        Address VARCHAR(10) NOT NULL,
-        PRIMARY KEY (Seller_id)
-    );
-
-    CREATE TABLE Seller_Phone_num
-    (
-        Phone_num NUMBER(10) NOT NULL,
-        Seller_id VARCHAR(6) NOT NULL,
-        PRIMARY KEY (Phone_num, Seller_id),
-        FOREIGN KEY (Seller_id) REFERENCES Seller(Seller_id)
-        ON DELETE CASCADE
-    );
-
-    CREATE TABLE Payment
-    (
-        payment_id VARCHAR(7) NOT NULL,
-        payment_date DATE NOT NULL,
-        Payment_type VARCHAR(10) NOT NULL,
-        Customer_id VARCHAR(6) NOT NULL,
-        Cart_id VARCHAR(7) NOT NULL,
-        PRIMARY KEY (payment_id),
-        FOREIGN KEY (Customer_id) REFERENCES Customer(Customer_id),
-        FOREIGN KEY (Cart_id) REFERENCES Cart(Cart_id),
-        total_amount numeric(6)
-    );
-
-    CREATE TABLE Product
-    (
-        Product_id VARCHAR(7) NOT NULL,
-        Type VARCHAR(7) NOT NULL,
-        Color VARCHAR(15) NOT NULL,
-        P_Size VARCHAR(2) NOT NULL,
-        Gender CHAR(1) NOT NULL,
-        Commission NUMBER(2) NOT NULL,
-        Cost NUMBER(5) NOT NULL,
-        Quantity NUMBER(2) NOT NULL,
-        Seller_id VARCHAR(6),
-        PRIMARY KEY (Product_id),
-        FOREIGN KEY (Seller_id) REFERENCES Seller(Seller_id)
-        ON DELETE SET NULL
-    );
-
-    CREATE TABLE Cart_item
-    (
-        Quantity_wished NUMBER(1) NOT NULL,
-        Date_Added DATE NOT NULL,
-        Cart_id VARCHAR(7) NOT NULL,
-        Product_id VARCHAR(7) NOT NULL,
-        FOREIGN KEY (Cart_id) REFERENCES Cart(Cart_id),
-        FOREIGN KEY (Product_id) REFERENCES Product(Product_id),
-        Primary key(Cart_id,Product_id)
-    );
-
-    alter table Cart_item add purchased varchar(3) default 'NO';
+    create table waiter(
+waiter_id integer primary key,
+waiter_fname varchar(50) not null,
+waiter_lname varchar(50)
+);
+create table customer(
+cust_id integer primary key,
+cust_fname varchar(50) not null,
+cust_lname varchar(50),
+contact_no integer
+);
+create table tips(
+waiter_id integer references waiter(waiter_id),
+cust_id integer references customer(cust_id),
+tips integer not null
+);
+create table ord(
+ord_no integer primary key,
+ord_date date not null,
+cust_id integer references customer(cust_id),
+waiter_id integer references waiter(waiter_id)
+);
+create table chef(
+chef_id integer primary key,
+chef_fname varchar(50) not null,
+chef_lname varchar(50),
+chef_type varchar(50) not null
+);
+create table food(
+item_no integer primary key,
+item_name varchar(50) not null,
+item_type varchar(50) not null,
+item_price integer not null,
+item_stock integer
+);
+create table contains(
+ord_no integer references ord(ord_no),
+item_no integer references food(item_no)
+);
+create table prepares(
+item_type varchar(50) primary key,
+chef_id integer references chef(chef_id)
+);
+create table bill(
+bill_no integer primary key,
+tot_price integer not null,
+tax float default 5,
+discount integer default 0,
+net_payable float as
+(tot_price+(tot_price*tax/100)-(tot_price*discount/100)),
+ord_no integer references ord(ord_no)
+);
 ```
 
-### 3.2 Inserting Values
+### 3.2 After Inserting Dummy Values
 
-These are some demo values. Full data will be updated in future commits
+### Customer:
 
-```sql
-    insert into Cart values('crt1011');
+![ER diagram](https://private-user-images.githubusercontent.com/110754495/329220322-11579329-de37-4ec0-88fd-93d2c8d22ce7.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTI2OTEsIm5iZiI6MTcxNTI1MjM5MSwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjIwMzIyLTExNTc5MzI5LWRlMzctNGVjMC04OGZkLTkzZDJjOGQyMmNlNy5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMDU5NTFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT02YmU3NjYzZmU4ZWRlMDYwY2I2YTEyYzQwM2U3MTY1ODA1ZmEwNThjZWVkNjJlNzc1MmE4ZGM3Y2U1ZTU1NDE3JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.VggxPOIDlERBYrla_1zvoEnfrdf2ca89pjTsWF0jqGk)
 
-    insert into Customer values('cid100','ABCM1235','rajat','G-453','632014',9893135876, 'crt1011');
-
-    insert into Seller values('sid100','12345','aman','delhi cmc');
-
-    insert into Product values('pid1001','jeans','red','32','M',10,10005,20,'sid100');
-
-    insert into Seller_Phone_num values('9943336206','sid100');
-
-    insert into Cart_item values(3,to_date('10-OCT-1999','dd-mon-yyyy'),'crt1011','pid1001','Y');
-
-    insert into Payment values('pmt1001',to_date('10-OCT-1999','dd-mon-yyyy'),'online','cid100','crt1011',NULL);
-```
-
+### Waiter:
+![ER diagram](https://private-user-images.githubusercontent.com/110754495/329220556-130add6b-c12c-4a2d-8c64-2d1b2553557a.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTIyNDQsIm5iZiI6MTcxNTI1MTk0NCwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjIwNTU2LTEzMGFkZDZiLWMxMmMtNGEyZC04YzY0LTJkMWIyNTUzNTU3YS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMDUyMjRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT00NzRlN2M5MDY4ZGNiMDI0ZmIyOTIwNmY1NmM5YzkzMjE5YTg3OWQ3OTZjNDAwYjJlMjQ4MmUzMDUxZTAyOTMzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.aFtXXXRYQ-UzRDGDRS0nV3b7h-7MX1gcTaECeeoPIQA)
+### Tips:
+![ER diagram](https://private-user-images.githubusercontent.com/110754495/329221275-aaf91580-d35a-465a-bb95-bdae4da1ff02.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTMyOTIsIm5iZiI6MTcxNTI1Mjk5MiwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjIxMjc1LWFhZjkxNTgwLWQzNWEtNDY1YS1iYjk1LWJkYWU0ZGExZmYwMi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMTA5NTJaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0wNWM0ZjllN2UyZWVkZDRhZTc2ZmJlY2E3YzhlOTBhZjI2OTUxOTllYjY4YTU4OGY0NjdlMTQxZTBjZDZhZmNhJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.gzp_ZGhY33o8aBkO0nKL-9avwdD_t_6bzVngMsU-YXU)
+### Food:
+![ER diagram](https://private-user-images.githubusercontent.com/110754495/329221515-21287cb6-e950-489f-871b-959ba36aefba.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTMyNDMsIm5iZiI6MTcxNTI1Mjk0MywicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjIxNTE1LTIxMjg3Y2I2LWU5NTAtNDg5Zi04NzFiLTk1OWJhMzZhZWZiYS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMTA5MDNaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1lYTY2NmNkN2I2ZmQ2ZmExNWFhNjdlNDA4YzkzZjI3OTQ4MjViZmRkZmY0NWJmZDUzNTYwMmViMjg5YjY0NTliJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.RCkY_92xHLnj1WFOjlNESZieMQaULTB-vqJj22-ZXQU)
+### Chef:
+![ER diagram](https://private-user-images.githubusercontent.com/110754495/329221742-c853eaf1-8857-4f09-ada4-d9132b2c2f27.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTMxOTIsIm5iZiI6MTcxNTI1Mjg5MiwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjIxNzQyLWM4NTNlYWYxLTg4NTctNGYwOS1hZGE0LWQ5MTMyYjJjMmYyNy5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMTA4MTJaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1lOWM4OWYwZWQzOGVjZjRkMmEzNGJiMzA1YzFkMGZmYjMwMDU4MDk3Y2MyMGQwODI1YjRkNWJhMjVjMWY2MDcwJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.aKq11dR_IukB8JSkrze2lPeM28sbhUnmGkojmwlIalw)
+### Prepares:
+![ER diagram](https://private-user-images.githubusercontent.com/110754495/329222206-cdc1dbdb-99a9-49d0-92b8-334fa6930ebb.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTMxNjIsIm5iZiI6MTcxNTI1Mjg2MiwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjIyMjA2LWNkYzFkYmRiLTk5YTktNDlkMC05MmI4LTMzNGZhNjkzMGViYi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMTA3NDJaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05MDdhZGVkNTIxMmYzZGUxYTliNDc0OWJiOWYxNDhiY2YxN2Y4YzVhNzY0OGI1ODBkNDdkN2ExMzZjZTdhYzAxJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.6mo2kSczCZTxFzegVt8Qftu_OYko1bCSay_qwPSaf4M)
+### Order:
+![ER diagram](https://private-user-images.githubusercontent.com/110754495/329222535-8333d341-0f12-4a33-a538-e794883232d8.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTMxMTUsIm5iZiI6MTcxNTI1MjgxNSwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjIyNTM1LTgzMzNkMzQxLTBmMTItNGEzMy1hNTM4LWU3OTQ4ODMyMzJkOC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMTA2NTVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT04YTAzMjUyZTdmZmQ5NWM0MjUxNmQzMGQ4ZGQ1NWI5MTBkMWMyMmM3OTE3Zjc0NGRiMjcyOTUzNjViYWE5YWE3JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.Z0QBBDco3_2XuCRdozwJDs_Lw6Pm0z1gYvSBebs4Lxs)
+### Contains:
+![ER diagram](https://private-user-images.githubusercontent.com/110754495/329222585-37aefd69-c2bd-4df8-801d-f49eeaf92811.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTMwNDQsIm5iZiI6MTcxNTI1Mjc0NCwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjIyNTg1LTM3YWVmZDY5LWMyYmQtNGRmOC04MDFkLWY0OWVlYWY5MjgxMS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMTA1NDRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1iMzQwOGZkNGRhMWZhMGIzMDZhNTUwZWYzZGE0MDQ1NmZhMGMyZTk3Y2I4ODYwMzkwOTFhZmNlY2E3ZmZkZjg2JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.W9FAJt0AxpawkFKnq55UZ7ww68ZjYYY1-btYPFHIAEI)
 ## 4. Queries
 
 ### 4.1 Basic Queries
