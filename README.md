@@ -1,15 +1,12 @@
 # Restaurant-Management-System
 
-As a part of our University Curriculum, we made this project for Database Management Systems (DBMS) - ITE1003.<br>
-This project contains theoretical as well as implementation in SQL.<br>
+As a part of our University Curriculum, we made this project for UCS310.This system offers an array of features, including menu browsing, personalized customer profiles, seamless order placement, convenient tipping options, and additional functionalities tailored to enhance the dining experience.
+This project contains **theoretical** as well as **implementation** in SQL.<br>
 
-## Pre-requisite
-
-Oracle SQL Server (or) Oracle Community Edition
 
 ## Contents
 
-- Mini world and Project Description
+- Requirement Analysis
 - Basic structure
   - Functional requirements
   - Entity Relation (ER) diagram and constraints
@@ -18,15 +15,21 @@ Oracle SQL Server (or) Oracle Community Edition
   - Creating tables
   - Inserting data
 - Queries
-  - Basic queries
   - PL/SQL function
   - Trigger function
 
 ## 1. Introduction
+Restaurant Management System is a crucial tool for the hospitality industry that
+enables restaurants to manage their operations efficiently. It offers numerous
+functionalities that help restaurants to streamline their operations and provide
+better services to their customers. In this project, we aim to develop a
+Restaurant Management System using SQL and PL/SQL. The system will provide
+features such as showing the menu, creating customer profiles, placing orders,
+giving tips, and more.
 
 ## 2. Basic Structure
 
-### 2.1 FRequirement Analysis
+### 2.1 Requirement Analysis
 
 To develop a successful Restaurant Management System, we need to analyze
 the requirements of the system. The following are the primary requirements for
@@ -80,7 +83,8 @@ You can directly copy and paste all the commands from the text given here into t
 ### 3.1 Creating Tables
 
 ```sql
-    create table waiter(
+
+create table waiter(
 waiter_id integer primary key,
 waiter_fname varchar(50) not null,
 waiter_lname varchar(50)
@@ -156,75 +160,13 @@ ord_no integer references ord(ord_no)
 ![ER diagram](https://private-user-images.githubusercontent.com/110754495/329222585-37aefd69-c2bd-4df8-801d-f49eeaf92811.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTMwNDQsIm5iZiI6MTcxNTI1Mjc0NCwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjIyNTg1LTM3YWVmZDY5LWMyYmQtNGRmOC04MDFkLWY0OWVlYWY5MjgxMS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMTA1NDRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1iMzQwOGZkNGRhMWZhMGIzMDZhNTUwZWYzZGE0MDQ1NmZhMGMyZTk3Y2I4ODYwMzkwOTFhZmNlY2E3ZmZkZjg2JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.W9FAJt0AxpawkFKnq55UZ7ww68ZjYYY1-btYPFHIAEI)
 ## 4. Queries
 
-### 4.1 Basic Queries
 
-#### If the customer wants to see details of product present in the cart
 
-```sql
-    select * from product where product_id in(
-        select product_id from Cart_item where (Cart_id in (
-            select Cart_id from Customer where Customer_id='cid100'
-        ))
-    and purchased='NO');
-```
-
-#### If a customer wants to see order history
-
-```sql
-    select product_id,Quantity_wished from Cart_item where (purchased='Y' and Cart_id in (select Cart_id from customer where Customer_id='cid101'));
-```
-
-#### Customer wants to see filtered products on the basis of size,gender,type
-
-```sql
-    select product_id, color, cost, seller_id from product where (type='jeans' and p_size='32' and gender='F' and quantity>0)
-```
-
-#### If customer wants to modify the cart
-
-```sql
-    delete from cart_item where (product_id='pid1001' and Cart_id in (select cart_id from Customer where Customer_id='cid100'));
-```
-
-#### If a seller stops selling his product
-
-```sql
-    delete  from seller where seller_id = 'sid100';
-    update product set quantity = 00 where seller_id is NULL;
-```
-
-#### If admin want to see what are the product purchased on the particular date
-
-```sql
-    select product_id from cart_item where (purchased='Y' and date_added='12-dec-2018');
-```
-#### How much product sold on the particular date
-
-```sql
-    select count(product_id) count_pid,date_added from Cart_item where purchased='Y'  group by(date_added);
-```
-#### If a customer want to know the total price present in the cart
-
-```sql
-    select sum(quantity_wished * cost) total_payable from product p join cart_item c on p.product_id=c.product_id where c.product_id in (select product_id from cart_item where cart_id in(select Cart_id from customer where customer_id='cid101') and purchased=’Y’);
-```
-#### Show the details of the customer who has not purchased any thing
-
-```sql
-    Select * from customer where customer_id not in (select customer_id from Payment);
-```
-#### Find total profit of the website from sales.
-
-```sql
-    select sum(quantity_wished * cost * commission/100) total_profit from product p join cart_item c on p.product_id=c.product_id where purchased=’Y’;
-```
-
-### 4.2 PL/SQL function
+### 4.1 PL/SQL function
 #### Generating Bill
 a. display_bill trigger:
 It displays the bill along with the bill_no,ord_no,items, price, total price, discount, tax and the net_payable amount to the customer.
-b. generate_bill procedure:
-It takes in the values order_no and any discount value and inserts the given values into the bill table.
+
 
 ```sql
 create or replace trigger display_bill after insert on bill for each row
@@ -235,7 +177,9 @@ dbms_output. put_line('Discount: '||:new.discount|| '%');
 dbms_output.put_line ('Net Payable Amount: Rs. '||: new.net_payable);
 end;
 
-
+```
+b. generate_bill procedure:
+```sql
 declare
 cursor c2 (n integer) is select f.item_no, f.item_name, f.item_price,c.ord_no from food f, contains c where f.item_no=c.item_no and c.ord_no=n;
 rec2 c2 %rowtype;
@@ -260,6 +204,9 @@ end if;
 close c2;
 end;
 
+
+
+It takes in the values order_no and any discount value and inserts the given values into the bill table.
 begin
 generate_bill (4,0);
 end;
@@ -268,8 +215,7 @@ end;
 #### Tips:
 a. give_tip procedure:
 It takes in the value of the tip given by the customer to the denoted waiter.
-b. display_waiter_tip procedure:
-It displays the total tips collected by a specific waiter.
+
 
 ```sql
    declare
@@ -281,8 +227,11 @@ end;
 begin
 give tip(4,3,10);
 end;
+```
 
-
+b. display_waiter_tip procedure:
+It displays the total tips collected by a specific waiter.
+```sql
 declare
 tot integer;
 procedure display_waiter_tip (wait_id in integer) is
@@ -374,5 +323,5 @@ Function to count number of cart items
     end;
 ```
 ## Contributors
-Do check the contributors to follow some awesome projects
+
 
