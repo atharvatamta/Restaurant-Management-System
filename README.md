@@ -45,8 +45,8 @@ and add more items to order.
 and also allow customers to tip the waiter.
 
 ### 2.2 Entity Relation Diagram
+![Open folder DBMS PROJECT 8](https://github.com/atharvatamta/Restaurant-Management-System/assets/110754495/4544213e-edac-4c32-b53d-d743b394d4b5)
 
-![ER diagram](https://private-user-images.githubusercontent.com/110754495/329217198-6e36fecd-658b-45c6-ba6c-496b0159b62f.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTE2NjAsIm5iZiI6MTcxNTI1MTM2MCwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjE3MTk4LTZlMzZmZWNkLTY1OGItNDVjNi1iYTZjLTQ5NmIwMTU5YjYyZi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMDQyNDBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1lYzUyMmViY2U0NDhmNTE2MzRkM2VhMGFlM2E5NDNkOTRiZmQ3ZTk4MmM1MTIyZTNiYzk4NzNkYjZhNjgyZmM1JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.-bCnfC-ibjX0hrnz8aRM2SpDf5uFaSKS2uJhH_4wz1Q)
 
 ### 2.3 ER To Table
 
@@ -299,7 +299,7 @@ add_order(4,items);
 end;
 ```
 
-(![ER diagram](https://private-user-images.githubusercontent.com/110754495/329263858-9421d61c-e965-4c77-aaaf-b766c73efe90.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNjIyMjUsIm5iZiI6MTcxNTI2MTkyNSwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjYzODU4LTk0MjFkNjFjLWU5NjUtNGM3Ny1hYWFmLWI3NjZjNzNlZmU5MC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMzM4NDVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0yYjdjMGMwZjcwODU2YTVkYWJlOTFiNjlhOGQ1ZWRiZjI3NWI1OTIyMWExZTA0NTdmY2U2MWU3MzdhNDZhNjkzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.eM7vuqlcNwsdQVli293idCBa3uKrwuUd5Kz-yO0YCHM)
+
 #### Generating Bill
 a. display_bill trigger:
 It displays the bill along with the bill_no,ord_no,items, price, total price, discount, tax and the net_payable amount to the customer.
@@ -402,5 +402,14 @@ In summary, developing a Restaurant Management System using SQL and
 PL/SQL is an excellent investment for restaurants, as it will help them
 manage their operations more efficiently, reduce errors, and provide better
 services to their customers.
+
+
+
+## created by:
+Atharva
+Akshat
+Akshara
+Ayush
+Yogita
 
 
