@@ -220,45 +220,79 @@ ord_no integer references ord(ord_no)
 ```
 
 ### 4.2 PL/SQL function
-#### Procedure which returns the type of product with  the cost less than the given cost
+#### Generating Bill
+a. display_bill trigger:
+It displays the bill along with the bill_no,ord_no,items, price, total price, discount, tax and the net_payable amount to the customer.
+b. generate_bill procedure:
+It takes in the values order_no and any discount value and inserts the given values into the bill table.
 
 ```sql
-    create or replace procedure cost_filter(c in number,t in varchar)
-    is
-    cs product.cost%type;
-    ty product.type%type;
-    id product.product_id%type;
-    cursor cf is
-    select product_id,cost,type from product where cost<c and type=t;
-    begin
-    open cf;
-    loop
-    fetch cf into id,cs,ty;
-    exit when cf%notfound;
-    dbms_output.put_line('Product' || id || 'has cost ' || cs || ' and the type is' || ty);
-    end loop;
-    close cf;
-    exception
-    when no_data_found then
-    dbms_output.put_line('Sorry no such products exist');
-    end;
+create or replace trigger display_bill after insert on bill for each row
+begin
+dbms_output.put_line('Total Price: Rs.'||: new.tot_price);
+dbms_output.put_line ('Tax: '||: new.tax||' %');
+dbms_output. put_line('Discount: '||:new.discount|| '%'); 
+dbms_output.put_line ('Net Payable Amount: Rs. '||: new.net_payable);
+end;
 
+
+declare
+cursor c2 (n integer) is select f.item_no, f.item_name, f.item_price,c.ord_no from food f, contains c where f.item_no=c.item_no and c.ord_no=n;
+rec2 c2 %rowtype;
+total integer:=0;
+b_no integer;
+procedure generate_bill(order_no in integer, disc in float) is
+begin
+open c2(order_no);
+select count(*)+1 into b_no from bill;
+dbms_output.put_line ('Bill No: 'Ilb_noll' order_no: 'I lorder_no);
+loop
+fetch c2 into rec2;
+exit when c2%notfound;
+dbms_output.put_line ('Item: 'Il rec2.item_name||' Price: Rs.'|| rec2.item_price);
+total:=total+rec2.item_price;
+end loop;
+if (total>1000) then
+insert into bill (bill_no, tot_price, tax, discount, ord_no) values (b_no, total, 10, disc, order_no);
+else
+insert into bill (bill_no, tot_price, discount, ord_no) values (b_no, total, disc, order_no);
+end if;
+close c2;
+end;
+
+begin
+generate_bill (4,0);
+end;
 ```
 
-#### Function which returns total number of products which a particular seller sells
+#### Tips:
+a. give_tip procedure:
+It takes in the value of the tip given by the customer to the denoted waiter.
+b. display_waiter_tip procedure:
+It displays the total tips collected by a specific waiter.
 
 ```sql
-    create or replace function totalProducts(sId in varchar)
-    return number
-    is
-    total number(2):=0;
-    begin
-    select count(*) into total
-    from product
-    where seller_id=sId;
-    return total;
-    end;
-    /
+   declare
+procedure give_tip(id in integer, wait_id in integer, t in integer) is
+Begin
+insert into tips values (wait_id,id,t);
+dbms_output.put_line ('Waiter 3 Recieved Rs. '||t||' tip');
+end;
+begin
+give tip(4,3,10);
+end;
+
+
+declare
+tot integer;
+procedure display_waiter_tip (wait_id in integer) is
+begin
+select sum(tip) into tot from tips where waiter_id=wait_id;
+dbms_output.put_line('Total tip for waiter id' ||wait_id || ' is Rs. '||tot);
+end;
+begin
+display_waiter_tip(3);
+end;
 ```
 Function execution:
 ```sql
@@ -342,9 +376,3 @@ Function to count number of cart items
 ## Contributors
 Do check the contributors to follow some awesome projects
 
-- [@bhumijgupta](https://www.github.com/bhumijgupta)
-- [@YashMeh](https://www.github.com/YashMeh)
-- [@roney_b](https://www.github.com)
-
-> Feel free to fork the repository and contribute to this project.
-You made it till the end. Brofist :punch:!!!
