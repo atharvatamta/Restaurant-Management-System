@@ -46,11 +46,34 @@ and also allow customers to tip the waiter.
 
 ### 2.2 Entity Relation Diagram
 
-![ER diagram](https://github.com/bhumijgupta/Ecommerce-management-DBMS-project/raw/master/images/new_er.png)
+![ER diagram](https://private-user-images.githubusercontent.com/110754495/329217198-6e36fecd-658b-45c6-ba6c-496b0159b62f.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTUyNTE2NjAsIm5iZiI6MTcxNTI1MTM2MCwicGF0aCI6Ii8xMTA3NTQ0OTUvMzI5MjE3MTk4LTZlMzZmZWNkLTY1OGItNDVjNi1iYTZjLTQ5NmIwMTU5YjYyZi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUwOVQxMDQyNDBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1lYzUyMmViY2U0NDhmNTE2MzRkM2VhMGFlM2E5NDNkOTRiZmQ3ZTk4MmM1MTIyZTNiYzk4NzNkYjZhNjgyZmM1JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.-bCnfC-ibjX0hrnz8aRM2SpDf5uFaSKS2uJhH_4wz1Q)
 
-### 2.3 Relational Database Schema
+### 2.3 ER To Table
+```sql
+ER to Table
+Relation ‘Places’
+Customer:- cust_id , cust_fname , cust_lname, contact_no
+Ord:- ord_no , ord_date , cust_id (FK)
+Relation ‘Takes’
+Ord:- ord_no , ord_date , waiter_id (FK)
+Waiter:- waiter_id , waiter_name , waiter_lname
+Relation ‘Tips’
+Customer:- cust_id , cust_fname , cust_lname , contact_no
+Waiter:- waiter_id , waiter_fname , waiter_lname
+Tips:- cust_id (FK) , waiter_id (FK) , tip
+Relation ‘Prepares’
+Food:- item_no , item_name , item_type , item_price , item_stock ,
+chef_id (FK)
+Chef:- chef_id , chef_fname , chef_lname , chef_type
+Relation ‘Generates’
+Ord:- ord_no , ord_date
+Bill:- bill_no , tot_price , tax , discount , net_payable , ord_no (FK)
+Relation ‘Contains’
+Food:- item_no , item_name , item_type , item_price , item_stock
+Contains:- item_no (FK) , ord_no (FK)
+Ord:- ord_no , ord_date
 
-![Relational diagram](https://github.com/bhumijgupta/Ecommerce-management-DBMS-project/raw/master/images/new_relational.png)
+```
 
 ## 3. Implementation
 
