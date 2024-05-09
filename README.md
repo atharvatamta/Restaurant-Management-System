@@ -3,6 +3,7 @@
 As a part of our University Curriculum, we made this project for UCS310.This system offers an array of features, including menu browsing, personalized customer profiles, seamless order placement, convenient tipping options, and additional functionalities tailored to enhance the dining experience.
 This project contains **theoretical** as well as **implementation** in SQL.<br>
 
+[ER to Table Relation.pdf](https://github.com/atharvatamta/Restaurant-Management-System/files/15263193/ER.to.Table.Relation.pdf)
 
 ## Contents
 
@@ -53,8 +54,8 @@ and also allow customers to tip the waiter.
 
 
 
-```sql
-ER to Table
+
+## ER to Table:
 Relation ‘Places’
 Customer:- cust_id , cust_fname , cust_lname, contact_no
 Ord:- ord_no , ord_date , cust_id (FK)
@@ -77,7 +78,7 @@ Food:- item_no , item_name , item_type , item_price , item_stock
 Contains:- item_no (FK) , ord_no (FK)
 Ord:- ord_no , ord_date
 
-```
+
 
 ## 3. Implementation
 
@@ -378,15 +379,27 @@ begin
 display_waiter_tip(3);
 end;
 ```
-Function execution:
-```sql
-    declare
-    c number(2);
-    begin
-    c:=totalProducts('sid102');
-    dbms_output.put_line('Total products is : '|| c);
-    end;
-```
-
+## Conclusion:
+In conclusion, the Restaurant Management System is an essential tool for the
+hospitality industry, and it provides numerous features to streamline
+operations and provide better services to customers. Developing a
+Restaurant Management System using SQL and PL/SQL is an excellent way
+to build a reliable, robust, and scalable system that meets the requirements
+of the restaurant industry.
+However, while developing such a system, it is essential to consider the
+system requirements, external requirements, and hardware requirements to
+ensure that the system performs optimally and securely. By taking these
+requirements into account, the Restaurant Management System will be able
+to handle a large number of transactions and users, integrate with other
+third-party systems, be accessible from multiple devices and platforms, and
+comply with the relevant regulations and standards.
+Moreover, the system will provide a seamless and intuitive user experience,
+making it easy for the restaurant staff to navigate and perform their tasks.
+The system will have a user-friendly interface with clear instructions and
+prompts, ensuring that the staff can use it with minimal training.
+In summary, developing a Restaurant Management System using SQL and
+PL/SQL is an excellent investment for restaurants, as it will help them
+manage their operations more efficiently, reduce errors, and provide better
+services to their customers.
 
 
